@@ -1,123 +1,163 @@
-import { describe, test, expect } from "vitest";
-import { Pokemon, Pokedex, Combat } from "../src/ejercicio1";
-//import { Artista, Disco, Cancion, BibliotecaMusical } from "../src/ejercicio2";
+import { describe, test, expect } from 'vitest';
 
-import { vehiculo, Coche, Moto } from "../src/ejercicio3";
+import { SeriesCollection, MovieCollection, DocumentaryCollection } from '../src/ejercicio1';
+import { Artista, Disco, Single, Cancion, DiscografiaCollection, BibliotecaMusical } from '../src/ejercicio2';
 
-// Ejercicio 1
+describe("SeriesCollection Tests", () => {
+    const series = new SeriesCollection([
+        { year: 2020, name: "Series1", genre: "Comedy", director: "Director1" },
+        { year: 2019, name: "Series2", genre: "Drama", director: "Director2" },
+        { year: 2018, name: "Series3", genre: "Action", director: "Director3" }
+    ]);
 
-describe("Pokemon Class", () => {
-    test("Crear un Pokemon correctamente", () => {
-        const charmander = new Pokemon("Charmander", 8.5, 0.6, "fuego", 52, 43, 65, 39);
-        expect(charmander.getNombre()).toBe("Charmander");
-        expect(charmander.getTipo()).toBe("fuego");
-        expect(charmander.getHp()).toBe(39);
+    test("Buscar por nombre", () => {
+        expect(series.searchByName("Series1")).toEqual([{ year: 2020, name: "Series1", genre: "Comedy", director: "Director1" }]);
+        expect(series.searchByName("Unknown")).toEqual([]);
     });
 
-    test("Recibir daño", () => {
-        const pikachu = new Pokemon("Pikachu", 6, 0.4, "eléctrico", 55, 40, 90, 35);
-        pikachu.recibirDaño(10);
-        expect(pikachu.getHp()).toBe(25);
-        pikachu.recibirDaño(30); // No debe ser negativo
-        expect(pikachu.getHp()).toBe(0);
+    test("Buscar por género", () => {
+        expect(series.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+        expect(series.searchByGenre("Unknown")).toEqual([]);
+    });
+
+    test("Buscar por director", () => {
+        expect(series.searchByDirector("Director3")).toEqual([{ year: 2018, name: "Series3", genre: "Action", director: "Director3" }]);
+        expect(series.searchByDirector("Unknown")).toEqual([]);
+    });
+
+    test("Buscar por año", () => {
+        expect(series.searchByYear(2018)).toEqual([{ year: 2018, name: "Series3", genre: "Action", director: "Director3" }]);
+        expect(series.searchByYear(2021)).toEqual([]);
+    });
+
+    test("Buscar por año y género", () => {
+        expect(series.searchByYear(2019)).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+        expect(series.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+    });
+
+    test("Buscar por año y director", () => {
+        expect(series.searchByYear(2018)).toEqual([{ year: 2018, name: "Series3", genre: "Action", director: "Director3" }]);
+        expect(series.searchByDirector("Director3")).toEqual([{ year: 2018, name: "Series3", genre: "Action", director: "Director3" }]);
+    });
+
+    test("Buscar por género y director", () => {
+        expect(series.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+        expect(series.searchByDirector("Director2")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+    });
+
+    test("Buscar por año, género y director", () => {
+        expect(series.searchByYear(2019)).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+        expect(series.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+        expect(series.searchByDirector("Director2")).toEqual([{ year: 2019, name: "Series2", genre: "Drama", director: "Director2" }]);
+    });
+
+    test("Buscar por nombre inexistente", () => {
+        expect(series.searchByName("Unknown")).toEqual([]);
     });
 });
 
-describe("Pokedex Class", () => {
-    test("Añadir y buscar un Pokemon", () => {
-        const pokedex = new Pokedex();
-        const squirtle = new Pokemon("Squirtle", 9, 0.5, "agua", 48, 65, 43, 44);
-        pokedex.setPokemon(squirtle);
+describe("MovieCollection Tests", () => {
+    const movies = new MovieCollection([
+        { year: 2020, name: "Movie1", genre: "Comedy", director: "Director1" },
+        { year: 2019, name: "Movie2", genre: "Drama", director: "Director2" },
+        { year: 2018, name: "Movie3", genre: "Action", director: "Director3" }
+    ]);
 
-        const pokemon = pokedex.buscarPokemon("agua");
-        expect(pokemon).toBe("Squirtle - Tipo: agua - HP: 44");
-+        pokedex.buscarPokemon("agua");
-    });
-});
-
-describe("Combat Class", () => {
-    test("Calcula daño correctamente", () => {
-        const charmander = new Pokemon("Charmander", 8.5, 0.6, "fuego", 52, 43, 65, 39);
-        const bulbasaur = new Pokemon("Bulbasaur", 6.9, 0.7, "hierba", 49, 49, 45, 45);
-
-        const combate = new Combat(charmander, bulbasaur);
-        const daño = combate.calcularDaño(charmander, bulbasaur);
-
-        expect(daño).toBeCloseTo(50 * (52 / 49) * 2, 2); // Comprobamos con la fórmula
+    test("Buscar por nombre", () => {
+        expect(movies.searchByName("Movie1")).toEqual([{ year: 2020, name: "Movie1", genre: "Comedy", director: "Director1" }]);
+        expect(movies.searchByName("Unknown")).toEqual([]);
     });
 
-    test("Simulación de combate", () => {
-        const charmander = new Pokemon("Charmander", 8.5, 0.6, "fuego", 52, 43, 65, 39);
-        const bulbasaur = new Pokemon("Bulbasaur", 6.9, 0.7, "hierba", 49, 49, 45, 45);
-
-        const combate = new Combat(charmander, bulbasaur);
-        const resultado = combate.start();
-
-        expect(resultado).toMatch(/ha ganado el combate!/);
+    test("Buscar por género", () => {
+        expect(movies.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Movie2", genre: "Drama", director: "Director2" }]);
+        expect(movies.searchByGenre("Unknown")).toEqual([]);
     });
-});
 
-//Ejercicio2
-
-// describe("Artista Class", () => {
-//     test("Crear un Artista correctamente", () => {
-//         const artista = new Artista("The Beatles", 1000000, []);
-//         expect(artista.getNombre()).toBe("The Beatles");
-//         expect(artista.getNumeroDeOyentes()).toBe(1000000);
-//     });
-// });
-
-// describe("Disco Class", () => {
-//     test("Crear un Disco correctamente", () => {
-//         const disco = new Disco("Abbey Road", 1969, []);
-//         expect(disco.getNombre()).toBe("Abbey Road");
-//         expect(disco.getAño()).toBe(1969);
-//     });
-// });
-
-// describe("Cancion Class", () => {
-//     test("Crear una Canción correctamente", () => {
-//         const cancion = new Cancion("Come Together", 4.2, "rock", true, 1000000);
-//         expect(cancion.getNombre()).toBe("Come Together");
-//         expect(cancion.getGenero()).toBe("rock");
-//         expect(cancion.getSingle()).toBe(true);
-//     });
-// });
-
-
-//Ejercicio
-
-describe("Coche", () => {
-    test("Crear un coche correctamente", () => {
-        const COCHE = new Coche ("8806KZS", "Toyota", "Corolla", 1200, 60, "azul",4,true);
-        expect(COCHE.getData()).toBe('Coche: Toyota Corolla, Matrícula: 8806KZS, Color: azul, Puertas: 4, Descapotable¿? true')
+    test("Buscar por director", () => {
+        expect(movies.searchByDirector("Director3")).toEqual([{ year: 2018, name: "Movie3", genre: "Action", director: "Director3" }]);
+        expect(movies.searchByDirector("Unknown")).toEqual([]);
     });
-    test("Comprobar getters y setters", () => {
-        const coche = new Coche("1234ABC", "Ford", "Focus", 1600, 90, "rojo", 5, false);
-        coche.NumeroPuertas = 3;
-        coche.Descapotable = true;
-        expect(coche.NumeroPuertas).toBe(3);
-        expect(coche.Descapotable).toBe(true);
+
+    test("Buscar por año", () => {
+        expect(movies.searchByYear(2018)).toEqual([{ year: 2018, name: "Movie3", genre: "Action", director: "Director3" }]);
+        expect(movies.searchByYear(2021)).toEqual([]);
+    });
+
+    test("Buscar por año y género", () => {
+        expect(movies.searchByYear(2019)).toEqual([{ year: 2019, name: "Movie2", genre: "Drama", director: "Director2" }]);
+        expect(movies.searchByGenre("Drama")).toEqual([{ year: 2019, name: "Movie2", genre: "Drama", director: "Director2" }]);
     });
 
 });
 
-describe("Moto", () => {
-    test("Crear una moto correctamente", () => {
-        const moto = new Moto ("8806KZS", "KTM", "Superbike", 2400, 120, "negro", "completo", "libre");
-        expect(moto.getData()).toBe('Moto: KTM Superbike, Matrícula: 8806KZS, Color: negro, Tipo de manillar: completo, Tipo de escape libre')
+describe("DocumentaryCollection Tests", () => {
+    const documentaries = new DocumentaryCollection([
+        { year: 2020, name: "Documentary1", genre: "Science", director: "Director1" },
+        { year: 2019, name: "Documentary2", genre: "History", director: "Director2" },
+        { year: 2018, name: "Documentary3", genre: "Nature", director: "Director3" }
+    ]);
+
+    test("Buscar por nombre", () => {
+        expect(documentaries.searchByName("Documentary1")).toEqual([{ year: 2020, name: "Documentary1", genre: "Science", director: "Director1" }]);
+        expect(documentaries.searchByName("Unknown")).toEqual([]);
     });
 
-    test("Comprobar getters y setters", () => {
-        const moto = new Moto("9101DEF", "Yamaha", "R1", 1000, 180, "azul", "deportivo", "cerrado");
-        moto.Manillar = "turismo";
-        moto.Escape = "abierto";
-        expect(moto.Manillar).toBe("turismo");
-        expect(moto.Escape).toBe("abierto");
+    test("Buscar por género", () => {
+        expect(documentaries.searchByGenre("History")).toEqual([{ year: 2019, name: "Documentary2", genre: "History", director: "Director2" }]);
+        expect(documentaries.searchByGenre("Unknown")).toEqual([]);
     });
+
+    test("Buscar por director", () => {
+        expect(documentaries.searchByDirector("Director3")).toEqual([{ year: 2018, name: "Documentary3", genre: "Nature", director: "Director3" }]);
+        expect(documentaries.searchByDirector("Unknown")).toEqual([]);
+    });
+
+    test("Buscar por año", () => {
+        expect(documentaries.searchByYear(2018)).toEqual([{ year: 2018, name: "Documentary3", genre: "Nature", director: "Director3" }]);
+        expect(documentaries.searchByYear(2021)).toEqual([]);
+    });
+
+    test("Buscar por año y género", () => {
+        expect(documentaries.searchByYear(2019)).toEqual([{ year: 2019, name: "Documentary2", genre: "History", director: "Director2" }]);
+        expect(documentaries.searchByGenre("History")).toEqual([{ year: 2019, name: "Documentary2", genre: "History", director: "Director2" }]);
+    });
+
 });
 
+describe("BibliotecaMusical Tests", () => {
+    const cancion1 = new Cancion("Song1", 3.5, "Rock", 1000);
+    const cancion2 = new Cancion("Song2", 4, "Pop", 500);
+    const disco = new Disco("Album1", 2020, [cancion1, cancion2]);
+    const single = new Single("HitSingle", 2022, cancion1);
+    const discografia = new DiscografiaCollection([disco, single]);
+    const artista = new Artista("Artist1", 10000, discografia);
+    const biblioteca = new BibliotecaMusical([artista]);
 
+    test("Debe buscar un artista por nombre", () => {
+        expect(biblioteca.buscarArtista("Artist1")).toBe(artista);
+        expect(biblioteca.buscarArtista("Unknown")).toBeUndefined();
+    });
 
+    test("Debe buscar un disco por nombre", () => {
+        expect(biblioteca.buscarDisco("Album1")).toBe(disco);
+        expect(biblioteca.buscarDisco("Unknown")).toBeUndefined();
+    });
 
+    test("Debe buscar una canción por nombre", () => {
+        expect(biblioteca.buscarCancion("Song1")).toBe(cancion1);
+        expect(biblioteca.buscarCancion("Unknown")).toBeUndefined();
+    });
 
+    test("Debe calcular el número de canciones en un disco", () => {
+        expect(biblioteca.calcularNumeroDeCanciones(disco)).toBe(2);
+    });
+
+    test("Debe calcular la duración total de un disco", () => {
+        expect(biblioteca.calcularDuracionDeDisco(disco)).toBe(7.5);
+    });
+
+    test("Debe calcular el número total de reproducciones de un disco", () => {
+        expect(biblioteca.calcularNumeroDeReproduccionesDeDisco(disco)).toBe(1500);
+    });
+});
+ 

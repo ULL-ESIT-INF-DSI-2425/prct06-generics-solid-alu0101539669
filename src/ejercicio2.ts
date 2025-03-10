@@ -1,40 +1,44 @@
-//Ejericio2
+// Ejercicio 2 - Ampliando la biblioteca musical
+// Teniendo en cuenta el ejercicio de la biblioteca musical de prácticas anteriores, mejore su diseño tratando de cumplir el mayor número de principios SOLID posible, si es que aún no los cumple.
 
+// Luego, trate de introducir las siguientes modificaciones a su diseño:
+
+// Ahora, la discografía de un artista podrá estar formada por una colección de discos o de singles. Por lo tanto, tendrá que contemplar la nueva entidad single. Generalmente, un single se diferencia de un disco en que el single contiene una única canción o varias versiones de la misma canción.
+
+// Además, ahora deberá hacer que la discografía sea una clase genérica. En algún punto de su código deberá concretar esta clase genérica indicando que la discografía puede ser una colección de discos, una colección de singles o una colección de discos y singles.
+ 
+ /**
+ * Interfaz Discografia
+ * Define la estructura de una colección de discos o singles
+ */
+export interface Discografia<T> {
+    getElementos(): T[];
+}
+
+/**
+ * Clase Genérica DiscografiaCollection
+ * Puede contener discos, singles o ambos
+ */
+export class DiscografiaCollection<T> implements Discografia<T> {
+    constructor(private elementos: T[]) {}
+
+    getElementos(): T[] { return this.elementos; }
+}
 
 /**
  * Clase Artista
- *  
- * @export  Artista necesario para la BibliotecaMusical
- * @class Artista donde se almacena la información de un artista
- * @param nombre Nombre del artista
- * @param numeroDeOyentes Número de oyentes del artista
- * @param Discogrefia Discografía del artista
- * @method getNombre() Devuelve el nombre del artista
- * @method getNumeroDeOyentes() Devuelve el número de oyentes del artista
- * @method getDiscografia() Devuelve la discografía del artista
- * 
- */
+  */
 export class Artista {
-    constructor(private nombre: string, private numeroDeOyentes: number, private Discogrefia: Disco[]) {}
+    constructor(private nombre: string, private numeroDeOyentes: number, private discografia: DiscografiaCollection<Disco | Single>) {}
 
     getNombre(): string { return this.nombre; }
     getNumeroDeOyentes(): number { return this.numeroDeOyentes; }
-    getDiscografia(): Disco[] { return this.Discogrefia; }
+    getDiscografia(): DiscografiaCollection<Disco | Single> { return this.discografia; }
 }
 
 /**
  * Clase Disco
- *  
- * @export  Disco necesario para la BibliotecaMusical
- * @class Disco donde
- * @param nombre Nombre del disco
- * @param año Año de lanzamiento del disco
- * @param canciones Canciones del disco
- * @method getNombre() Devuelve el nombre del disco
- * @method getAño() Devuelve el año de lanzamiento del disco
- * @method getCanciones() Devuelve las canciones del disco
-* 
-*/
+ */
 export class Disco {
     constructor(private nombre: string, private año: number, private canciones: Cancion[]) {}
 
@@ -44,89 +48,63 @@ export class Disco {
 }
 
 /**
- * Clase Cancion
- *  
- * @export  Cancion necesario para la BibliotecaMusical
- * @class Cancion donde se almacena la información de una canción
- * @param nombre Nombre de la canción
- * @param duracion Duración de la canción
- * @param genero Género de la canción
- * @param single Si es un single o no
- * @param numeroDeReproducciones Número de reproducciones de la canción
- * @method getNombre() Devuelve el nombre de la canción
- * @method getDuracion() Devuelve la duración de la canción
- * @method getGenero() Devuelve el género de la canción
- * @method getSingle() Devuelve si es un single o no
- * @method getNumeroDeReproducciones() Devuelve el número de reproducciones de la canción
- * 
+ * Clase Single
  */
+export class Single {
+    constructor(private nombre: string, private año: number, private cancion: Cancion) {}
+
+    getNombre(): string { return this.nombre; }
+    getAño(): number { return this.año; }
+    getCancion(): Cancion { return this.cancion; }
+}
+
+/**
+ * Clase Cancion
+  */
 export class Cancion {
-    constructor(private nombre: string, private duracion: number, private genero: string, private single: boolean, private numeroDeReproducciones: number) {}
+    constructor(private nombre: string, private duracion: number, private genero: string, private numeroDeReproducciones: number) {}
 
     getNombre(): string { return this.nombre; }
     getDuracion(): number { return this.duracion; }
     getGenero(): string { return this.genero; }
-    getSingle(): boolean { return this.single; }
-    getNumeroDeReproducciones(): number { return this.numeroDeReproducciones; }
+     getNumeroDeReproducciones(): number { return this.numeroDeReproducciones; }
 }
 
 /**
  * Clase BibliotecaMusical
- *
- * @export  BibliotecaMusical necesario para almacenar la información de los artistas
- * @class BibliotecaMusical donde se almacena la información de los artistas
- * @param artistas Array de artistas
- * @method getArtistas() Devuelve el array de artistas
- * @method mostrarArtistas() Muestra los artistas en consola
- * @method buscarArtista (nombre: string) Busca un artista por su nombre
- * @method buscarDisco (nombre: string) Busca un disco por su nombre
- *  
-*/
+ */
 export class BibliotecaMusical {
     constructor(private artistas: Artista[]) {}
     
     getArtistas(): Artista[] { return this.artistas; }
 
     mostrarArtistas() {
-        console.table(this.artistas);
+        console.table(this.artistas.map(a => ({ Nombre: a.getNombre(), Oyentes: a.getNumeroDeOyentes() })));
     }
 
-    buscarArtista(nombre: string) {
-        const artista = this.artistas.find(artista => artista.getNombre() === nombre);
-        if (artista) {
-            console.table(artista);
-        } else {
-            console.log("Artista no encontrado");
-        }
+    buscarArtista(nombre: string): Artista | undefined {
+        return this.artistas.find(artista => artista.getNombre() === nombre);
     }
 
-    buscarDisco(nombre: string) {
-        const disco = this.artistas.flatMap(artista => artista.getDiscografia()).find(disco => disco.getNombre() === nombre);
-        if (disco) {
-            console.table(disco);
-        } else {
-            console.log("Disco no encontrado");
-        }
+    buscarDisco(nombre: string): Disco | undefined {
+        return this.artistas.flatMap(a => a.getDiscografia().getElementos()).filter(e => e instanceof Disco).find(d => (d as Disco).getNombre() === nombre) as Disco;
     }
 
-    buscarCancion(nombre: string) {
-        const cancion = this.artistas.flatMap(artista => artista.getDiscografia().flatMap(disco => disco.getCanciones())).find(cancion => cancion.getNombre() === nombre);
-        if (cancion) {
-            console.table(cancion);
-        } else {
-            console.log("Canción no encontrada");
-        }
+    buscarCancion(nombre: string): Cancion | undefined {
+        return this.artistas.flatMap(a => a.getDiscografia().getElementos())
+            .flatMap(d => d instanceof Disco ? d.getCanciones() : [(d as Single).getCancion()])
+            .find(c => c.getNombre() === nombre);
     }
 
-    calcularNumeroDeCanciones(disco: Disco) {
+    calcularNumeroDeCanciones(disco: Disco): number {
         return disco.getCanciones().length;
     }
 
-    calcularDuracionDeDisco(disco: Disco) {
+    calcularDuracionDeDisco(disco: Disco): number {
         return disco.getCanciones().reduce((acc, cancion) => acc + cancion.getDuracion(), 0);
     }
 
-    calcularNumeroDeReproduccionesDeDisco(disco: Disco) {
+    calcularNumeroDeReproduccionesDeDisco(disco: Disco): number {
         return disco.getCanciones().reduce((acc, cancion) => acc + cancion.getNumeroDeReproducciones(), 0);
     }
-}
+} 

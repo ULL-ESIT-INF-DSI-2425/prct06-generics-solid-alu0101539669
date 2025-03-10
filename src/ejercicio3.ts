@@ -1,121 +1,109 @@
-// Ejercicio
+// // Ejercicio 3 - Gestor de ficheros
+// // Teniendo en cuenta el código fuente propuesto más abajo, indique si se está violando alguno de los principios SOLID y justifique su respuesta. En tal caso, ¿podría proporcionar un mejor diseño e implementación que sí que cumpla con dichos principios?
 
-/**
- * Clase vehiculo
- * 
- */
+// // Para que el código fuente funcione correctamente, instale el paquete @types/node como una dependencia de desarrollo de su proyecto.
 
-export  abstract class vehiculo {
-    constructor(private matricula_: string, private marca_: string, private modelo_: string, private cilindrada_: number, private potencia_: number, private color_: string) {}
+// import * as fs from "fs";
 
-    get Matricula(): string { return this.matricula_; }
-    get Marca(): string { return this.marca_; }
-    get Modelo(): string { return this.modelo_; }
-    get Cilindrada(): number { return this.cilindrada_; }
-    get Color(): string { return this.color_; }
-    get Potencia(): number { return this.potencia_; }
+// class FileManager {
+//   constructor(private filePath: string) {}
 
-    set Matricula(matricula){
-        this.matricula_ = matricula;
-    }
-    set Marca(marca){
-        this.marca_ = marca;
-    }
-    set Modelo(modelo){
-        this.modelo_ = modelo;
-    }
-    set Cilindrada(cilindrada){
-        this.cilindrada_ = this.cilindrada_;
-    }
-    set Color(color){
-        this.color_ = color;
-    }
-    set Potencia(potencia){
-        this.potencia_ = potencia;
-    }
+//   // Reads file
+//   public readFile(): string {
+//     try {
+//       const content: string = fs.readFileSync(this.filePath, "utf-8");
+//       return content;
+//     } catch (error) {
+//       console.error("Error al leer el archivo");
+//       return "";
+//     }
+//   }
 
-    abstract getData(): string;
-   
+//   // Writes file
+//   public writeFile(data: string): void {
+//     try {
+//       fs.writeFileSync(this.filePath, data, "utf-8");
+//       console.log("Archivo escrito exitosamente.");
+//     } catch (error) {
+//       console.error("Error al escribir en el archivo");
+//     }
+//   }
+// }
+
+// // Client code
+// const fileManager = new FileManager("example.txt");
+
+// // Reading content
+// const currentContent = fileManager.readFile();
+// console.log("Current content:", currentContent);
+
+// // Writing content
+// const newData = "This is new content to be written into the file.";
+// fileManager.writeFile(newData);
+
+// // Updating content
+// const updatedContent = fileManager.readFile();
+// console.log("Updated content:", updatedContent);
+ 
+// Este código viola el principio de responsabilidad única (SRP) y el principio de inversión de dependencias (DIP). La clase FileManager tiene la responsabilidad de leer y escribir archivos, lo que viola SRP. Además, FileManager depende directamente de la clase fs, lo que viola DIP.
+
+// Para cumplir con SRP, se puede separar la lógica de almacenamiento en una interfaz y una implementación concreta. Para cumplir con DIP, FileManager debe depender de la interfaz en lugar de la implementación concreta de fs.
+
+// A continuación se muestra una posible solución que cumple con SRP y DIP:
+
+import * as fs from "fs";
+
+// Interfaz para almacenamiento, cumpliendo DIP
+interface Storage {
+  read(): string;
+  write(data: string): void;
 }
 
-/**
- * @class Coche 
- * @param matricula Matricula del coche
- * @param marca marca del coche
- * @param modelo modelo del coche 
- * @param numeroPuertas indica el numero de puertas que tiene el coche
- * @method get NumeroPuertas devuelve el numero de puertas
- * @method getData() devuelve la información del coche 
-*/
+// Implementación para archivos locales, cumpliendo SRP
+class FileStorage implements Storage {
+  constructor(private filePath: string) {}
 
-export class Coche extends vehiculo {
-    constructor(matricula: string, marca: string, modelo: string, cilindrada: number, potencia: number, color :string, private numeroPuertas: number, private descapotable: boolean) {
-        super(matricula, marca, modelo, cilindrada, potencia, color);
+  public read(): string {
+    try {
+      return fs.readFileSync(this.filePath, "utf-8");
+    } catch (error) {
+      console.error("Error al leer el archivo:", error);
+      return "";
     }
+  }
 
-    get NumeroPuertas(): number {return this.numeroPuertas;}
-    get Descapotable(): boolean {return this.descapotable;}
-
-    set NumeroPuertas(puertas){
-        this.numeroPuertas = puertas;
+  public write(data: string): void {
+    try {
+      fs.writeFileSync(this.filePath, data, "utf-8");
+      console.log("Archivo escrito exitosamente.");
+    } catch (error) {
+      console.error("Error al escribir en el archivo:", error);
     }
-
-    set Descapotable(descapota){
-        this.descapotable = descapota;
-    }
-
-    getData(): string {
-        return `Coche: ${this.Marca} ${this.Modelo}, Matrícula: ${this.Matricula}, Color: ${this.Color}, Puertas: ${this.numeroPuertas}, Descapotable¿? ${this.descapotable}`;
-    }
+  }
 }
 
-/**
- * Clase Moto
- * 
- */
+// Clase FileManager separada de la implementación del almacenamiento
+class FileManager {
+  constructor(private storage: Storage) {}
 
-export class Moto extends vehiculo {
-    constructor(matricula: string, marca: string, modelo: string, cilindrada: number, potencia: number, color :string, private tipoDeManillar: string, private tipoDeEscape: string ) {
-        super(matricula, marca, modelo, cilindrada, potencia, color);
-    }
+  public readFile(): string {
+    return this.storage.read();
+  }
 
-    get Manillar(): string {return this.tipoDeManillar;}
-    get Escape(): string {return this.tipoDeEscape;}
-
-    set Manillar(manilla){
-        this.tipoDeManillar = manilla;
-    }
-
-    set Escape(escapes){
-        this.tipoDeEscape = escapes;
-    }
-
-    getData(): string {
-        return `Moto: ${this.Marca} ${this.Modelo}, Matrícula: ${this.Matricula}, Color: ${this.Color}, Tipo de manillar: ${this.tipoDeManillar}, Tipo de escape ${this.tipoDeEscape}`;
-    }
-
+  public writeFile(data: string): void {
+    this.storage.write(data);
+  }
 }
 
-export class Parking {
-    private coches: { vehiculo: Coche; fechaEntrada: string  }[] = [];
-    private motos: { vehiculo: Moto; fechaEntrada: string }[] = [];
-  
-    constructor(private maxCoches: number, private maxMotos: number) {}
+// Uso del FileManager con almacenamiento en archivos locales
+const fileManager = new FileManager(new FileStorage("example.txt"));
 
-    estacionarCoche(coche: Coche, fechaEntrada:string): boolean {
-        if (this.coches.length < this.maxCoches) {
-          //this.coches.push(coche, fechaEntrada);
-          return true;
-        }
-        return false;
-    }
+// Leer contenido
+console.log("Current content:", fileManager.readFile());
 
-    estacionarMoto(moto: Moto): boolean {
-        if (this.motos.length < this.maxMotos){
-            
-            return true;
-        }
-        return false;
-    }
+// Escribir contenido
+fileManager.writeFile("This is new content to be written into the file.");
 
-}
+// Leer contenido actualizado
+console.log("Updated content:", fileManager.readFile());
+ 
