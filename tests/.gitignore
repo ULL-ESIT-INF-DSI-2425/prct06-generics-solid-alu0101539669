@@ -1,0 +1,7 @@
+dist
+node_modules
+eslint.config.js
+package-lock.json
+package.json
+tsconfig.json
+coverage
