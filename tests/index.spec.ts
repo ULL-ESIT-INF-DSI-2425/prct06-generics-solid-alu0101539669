@@ -3,6 +3,9 @@ import { describe, test, expect } from 'vitest';
 import { SeriesCollection, MovieCollection, DocumentaryCollection } from '../src/ejercicio1';
 import { Artista, Disco, Single, Cancion, DiscografiaCollection, BibliotecaMusical } from '../src/ejercicio2';
 
+import { Complex, ArithmeticableCollection } from "../src/ejerciciomod";
+
+
 describe("SeriesCollection Tests", () => {
     const series = new SeriesCollection([
         { year: 2020, name: "Series1", genre: "Comedy", director: "Director1" },
@@ -160,4 +163,112 @@ describe("BibliotecaMusical Tests", () => {
         expect(biblioteca.calcularNumeroDeReproduccionesDeDisco(disco)).toBe(1500);
     });
 });
- 
+
+
+describe("Complex class", () => {
+    test("Deberia realizar la suma correctamente", () => {
+      const c1 = new Complex(2, 3);
+      const c2 = new Complex(1, 4);
+      const result = c1.add(c2);
+      expect(result.RealNumber).toBe(3);
+      expect(result.ImaginaryNumber).toBe(7);
+    });
+  
+    test("Deberia realizar la suma correctamente", () => {
+        const c1 = new Complex(2, 7);
+        const c2 = new Complex(3, -4);
+        const result = c1.add(c2);
+        expect(result.RealNumber).toBe(5);
+        expect(result.ImaginaryNumber).toBe(3);
+    });
+
+    test("Deberia realizar la resta correctamente", () => {
+        const c1 = new Complex(9, 5);
+        const c2 = new Complex(4, 7);
+        const result = c1.substract(c2);
+        expect(result.RealNumber).toBe(5);
+        expect(result.ImaginaryNumber).toBe(-2);
+    });
+    
+    test("Deberia realizar la resta correctamente", () => {
+        const c1 = new Complex(9, 5);
+        const c2 = new Complex(4, 7);
+        const result = c1.substract(c2);
+        expect(result.RealNumber).toBe(5);
+        expect(result.ImaginaryNumber).toBe(-2);
+    });
+  
+    test("Deberia realizar la multiplicacion correctamente", () => {
+      const c1 = new Complex(1, 2);
+      const c2 = new Complex(3, 4);
+      const result = c1.multiply(c2);
+      expect(result.RealNumber).toBe(-5);
+      expect(result.ImaginaryNumber).toBe(10);
+    });
+
+    test("Deberia realizar la multiplicacion correctamente", () => {
+        const c1 = new Complex(5, 2);
+        const c2 = new Complex(2, -3);
+        const result = c1.multiply(c2);
+        expect(result.RealNumber).toBe(16);
+        expect(result.ImaginaryNumber).toBe(-11);
+    });
+  
+    test("Deberia realizar la division correctamente", () => {
+      const c1 = new Complex(4, 2);
+      const c2 = new Complex(3, -1);
+      const result = c1.divide(c2);
+      expect(result.RealNumber).toBeCloseTo(1);
+      expect(result.ImaginaryNumber).toBeCloseTo(1);
+    });
+
+    test("Deberia realizar la division correctamente", () => {
+        const c1 = new Complex(3, 2);
+        const c2 = new Complex(1, -2);
+        const result = c1.divide(c2);
+        expect(result.RealNumber).toBeCloseTo(-1/5);
+        expect(result.ImaginaryNumber).toBeCloseTo(8/5);
+      });
+
+});
+
+    
+describe("ArithmeticableCollection class", () => {
+    test("Añade y obtiene el elemento correctaamente", () => {
+      const collection = new ArithmeticableCollection<Complex>();
+      const c1 = new Complex(1, 1);
+      collection.addArithmeticable(c1);
+      expect(collection.getArithmeticable(0)).toBe(c1);
+    });
+
+
+    test("Añade y obtiene el elemento correctaamente", () => {
+        const collection = new ArithmeticableCollection<Complex>();
+        const c1 = new Complex(1, 1);
+        const c2 = new Complex(1, 2);
+        const c3 = new Complex(3, 1);
+        const c4 = new Complex(2, 5);
+        const c5 = new Complex(3, 8);
+        const c6 = new Complex(4, 6);
+        collection.addArithmeticable(c1);
+        collection.addArithmeticable(c2);
+        collection.addArithmeticable(c3);
+        collection.addArithmeticable(c4);
+        collection.addArithmeticable(c5);
+        collection.addArithmeticable(c6);
+        expect(collection.getArithmeticable(4)).toBe(c5);
+        
+    });
+
+    test("Retorna el tamaño de la colección", () => {
+        const collection = new ArithmeticableCollection<Complex>();
+        expect(collection.getNumbeOfArithmeticables()).toBe(0);
+        collection.addArithmeticable(new Complex(2, 2));
+        collection.addArithmeticable(new Complex(2, 2));
+        collection.addArithmeticable(new Complex(2, 2));
+        collection.addArithmeticable(new Complex(2, 2));
+        collection.addArithmeticable(new Complex(2, 2));
+        expect(collection.getNumbeOfArithmeticables()).toBe(5);
+    });
+});
+  
