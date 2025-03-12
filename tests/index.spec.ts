@@ -256,19 +256,61 @@ describe("ArithmeticableCollection class", () => {
         collection.addArithmeticable(c4);
         collection.addArithmeticable(c5);
         collection.addArithmeticable(c6);
-        expect(collection.getArithmeticable(4)).toBe(c5);
         
+        expect(collection.getArithmeticable(4)).toBe(c5);
+        expect(collection.getArithmeticable(4).ImaginaryNumber).toBe(8);
+        expect(collection.getArithmeticable(4).RealNumber).toBe(3);
+
+        expect(collection.getArithmeticable(3)).toBe(c4);
+        expect(collection.getArithmeticable(3).RealNumber).toBe(2);
+        expect(collection.getArithmeticable(3).ImaginaryNumber).toBe(5);
+
+        expect(collection.getArithmeticable(2)).toBe(c3);
+        expect(collection.getArithmeticable(2).RealNumber).toBe(3);
+        expect(collection.getArithmeticable(2).ImaginaryNumber).toBe(1);
+        
+        expect(collection.getArithmeticable(1)).toBe(c2);
+        expect(collection.getArithmeticable(1).RealNumber).toBe(1);
+        expect(collection.getArithmeticable(1).ImaginaryNumber).toBe(2);
+
+        expect(collection.getArithmeticable(0)).toBe(c1);
+        expect(collection.getArithmeticable(0).RealNumber).toBe(1);
+        expect(collection.getArithmeticable(0).ImaginaryNumber).toBe(1);
+
+        expect(collection.getNumbeOfArithmeticables()).toBe(6);
+
     });
 
     test("Retorna el tamaño de la colección", () => {
         const collection = new ArithmeticableCollection<Complex>();
         expect(collection.getNumbeOfArithmeticables()).toBe(0);
         collection.addArithmeticable(new Complex(2, 2));
-        collection.addArithmeticable(new Complex(2, 2));
-        collection.addArithmeticable(new Complex(2, 2));
-        collection.addArithmeticable(new Complex(2, 2));
-        collection.addArithmeticable(new Complex(2, 2));
+        collection.addArithmeticable(new Complex(1, 1));
+        collection.addArithmeticable(new Complex(3, 2));
+        collection.addArithmeticable(new Complex(8, 4));
+        collection.addArithmeticable(new Complex(6, 5));
+
+        expect(collection.getArithmeticable(0).ImaginaryNumber).toBe(2);
+        expect(collection.getArithmeticable(0).RealNumber).toBe(2);
+
+        expect(collection.getArithmeticable(1).ImaginaryNumber).toBe(1);
+        expect(collection.getArithmeticable(1).RealNumber).toBe(1);
+
+        expect(collection.getArithmeticable(2).ImaginaryNumber).toBe(2);
+        expect(collection.getArithmeticable(2).RealNumber).toBe(3);
+
+        expect(collection.getArithmeticable(3).ImaginaryNumber).toBe(4);
+        expect(collection.getArithmeticable(3).RealNumber).toBe(8);
+
+        expect(collection.getArithmeticable(4).ImaginaryNumber).toBe(5);
+        expect(collection.getArithmeticable(4).RealNumber).toBe(6);
+
         expect(collection.getNumbeOfArithmeticables()).toBe(5);
     });
+
+    
+
+
 });
+
   
