@@ -307,10 +307,7 @@ describe("ArithmeticableCollection class", () => {
 
         expect(collection.getNumbeOfArithmeticables()).toBe(5);
     });
-
-    
-
-
+     
 });
 
   
