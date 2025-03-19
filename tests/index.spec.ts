@@ -5,6 +5,10 @@ import { Artista, Disco, Single, Cancion, DiscografiaCollection, BibliotecaMusic
 
 import { Complex, ArithmeticableCollection } from "../src/ejerciciomod";
 
+import { Rational } from "../src/ejerciciomod2"
+
+import { Adapter } from "../src/ejerciciomod3"
+import { C } from 'vitest/dist/chunks/reporters.66aFHiyX.js';
 
 describe("SeriesCollection Tests", () => {
     const series = new SeriesCollection([
@@ -310,4 +314,97 @@ describe("ArithmeticableCollection class", () => {
      
 });
 
-  
+describe("Rational", () => {
+    test("Constructor ", () => {
+      const rational = new Rational(3, 4);
+      expect(rational.getNumerator()).toBe(3);
+      expect(rational.getDenominator()).toBe(4);
+    });
+    
+    test("Constructor ", () => {
+        const rational = new Rational(5, 6);
+        expect(rational.getNumerator()).toBe(5);
+        expect(rational.getDenominator()).toBe(6);
+    });
+    
+    test("Suma ", () => {
+        const r1 = new Rational(1, 2);
+        const r2 = new Rational(1, 3);
+        const result = r1.add(r2);
+        expect(result.getNumerator()).toBe(5);
+        expect(result.getDenominator()).toBe(6);
+    });
+
+    test("Resta ", () => {
+        const r1 = new Rational(3, 4);
+        const r2 = new Rational(1, 4);
+        const result = r1.substract(r2);
+        expect(result.getNumerator()).toBe(8);
+        expect(result.getDenominator()).toBe(16);
+    });
+
+    test("Multiplicación ", () => {
+        const r1 = new Rational(2, 3);
+        const r2 = new Rational(3, 4);
+        const result = r1.multiply(r2);
+        expect(result.getNumerator()).toBe(6);
+        expect(result.getDenominator()).toBe(12);
+    });
+
+    test("División ", () => {
+        const r1 = new Rational(3, 4);
+        const r2 = new Rational(2, 5);
+        const result = r1.divide(r2);
+        expect(result.getNumerator()).toBe(15);
+        expect(result.getDenominator()).toBe(8);
+    });
+
+});
+
+describe("Adapter", () => {
+    test("Deberia adaptar el servicio", () => {
+      const rational = new Rational(3, 4);
+      const adapter = new Adapter(rational);
+      expect(adapter.RealNumber).toBe(3/4);
+      expect(adapter.ImaginaryNumber).toBe(0);
+    });
+
+    test("Suma", () => {
+        const rational = new Rational(2, 7);
+        const c2 = new Complex(3, -4);
+        const adapter = new Adapter(rational);
+        
+        const resultado = adapter.add(c2);
+        expect(resultado.RealNumber).toBe(3.2857142857142856);
+        expect(resultado.ImaginaryNumber).toBe(-4);
+    });
+
+    test("Resta", () => {
+        const rational = new Rational(3, 4);
+        const adapter = new Adapter(rational);
+        const c2 = new Complex(1, 2);
+
+        const resultado = adapter.substract(c2);
+        expect(resultado.RealNumber).toBe(-0.25);
+        expect(resultado.ImaginaryNumber).toBe(-2);
+    });
+
+    test("Multiplicacion", () => {
+        const r1 = new Rational(1, 2);
+        const adapter = new Adapter(r1);
+        const c2 = new Complex(3, 4);
+        const result = adapter.multiply(c2);
+        expect(result.RealNumber).toBe(1.5);
+        expect(result.ImaginaryNumber).toBe(2);
+    });
+
+    test("Division", () => {
+        const r2 = new Rational(4, 2);
+        const adapter = new Adapter(r2);
+        const c2 = new Complex(3, -1);
+        const result = adapter.divide(c2);
+        expect(result.RealNumber).toBeCloseTo(0.6);
+        expect(result.ImaginaryNumber).toBeCloseTo(0.2);
+    });
+
+});
