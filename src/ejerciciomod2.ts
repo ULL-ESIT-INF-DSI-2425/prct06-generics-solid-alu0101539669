@@ -5,7 +5,7 @@
 // Haga uso de módulos ESM. Modifique los ficheros de configuración de su proyecto para lograr lo anterior.
 // Recuerde que deberá incluir la documentación haciendo uso de TSDoc, así como incluir pruebas utilizando el framework de pruebas Vitest. También compruebe el nivel de cubrimiento de su código a través de Coveralls. Se valorará positivamente el hecho de comprobar la calidad del código fuente desarrollado a través de SonarQube. Como entrega de esta tarea deberá indicar, de nuevo, el enlace a dicho repositorio GitHub con los ejercicios solicitados.
 
-import { Arithmeticable } from "./ejerciciomod";
+import { Arithmeticable } from "./ejerciciomod.js";
 
 export class Rational implements Arithmeticable<Rational> {
   private _numerator: number;

@@ -30,12 +30,13 @@ interface Documentary {
     genre: string;
     director: string;
 }
-declare class SeriesCollection extends BasicStreamableCollection<Series> {
+export declare class SeriesCollection extends BasicStreamableCollection<Series> {
     constructor(collection: Series[]);
 }
-declare class MovieCollection extends BasicStreamableCollection<Movie> {
+export declare class MovieCollection extends BasicStreamableCollection<Movie> {
     constructor(collection: Movie[]);
 }
-declare class DocumentaryCollection extends BasicStreamableCollection<Documentary> {
+export declare class DocumentaryCollection extends BasicStreamableCollection<Documentary> {
     constructor(collection: Documentary[]);
 }
+export {};

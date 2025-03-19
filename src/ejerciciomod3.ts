@@ -1,5 +1,5 @@
-import { Arithmeticable, Complex } from "./ejerciciomod";
-import {Rational} from "./ejerciciomod2"
+import { Arithmeticable, Complex } from "./ejerciciomod.js";
+import {Rational} from "./ejerciciomod2.js"
 
 // Adapter class that makes SystemA to understand the interface of SystemB
 export class Adapter extends Complex {
